@@ -54,6 +54,10 @@
     flex-direction: column;
 }
 
+.cart-list {
+    flex-direction: column;
+}
+
 .container{
     max-width: 1140px;
     display: flex;
