@@ -57,8 +57,9 @@ class GoodsList {
     init() {
         this.goodsListBlock = document.querySelector('.catalog');
 
-        this.render();
+        this.render(this.goods);
         this.addEventHandler();
+        this.filterListGoods();
         this._cart.init();
     }
 
@@ -69,15 +70,16 @@ class GoodsList {
         });
     }
 
-    render() {
-        if (this.goods.length > 0) {
-            this.goods.forEach(good => {
+    render(goods) {         // Получает аргумент тип: Список (Массив)
+        this.goodsListBlock.innerHTML = '';     // Очистка поля показа товаров
+        if (goods.length > 0) {
+            goods.forEach(good => {
                 const goodItem = new GoodsItem(good);
                 this.goodsListBlock.insertAdjacentHTML('beforeend', goodItem.render());
             });
         } else {
             pass; // Товаров нет/ Каталог пуст
-        };
+        }
     }
 
     addEventHandler() {
@@ -96,6 +98,25 @@ class GoodsList {
         const newProduct = this.goods.find((good) => good.id_product === id_product);
         this._cart.basketList.addToBasket(newProduct);
         // 
+    }
+
+    searchGoods(value) {
+        const regexp = new RegExp(value, 'i');
+        return this.goods.filter(good => regexp.test(good.product_name));
+    }
+
+    filterListGoods() {
+        let goodsList = [];
+        const searchButton = document.querySelector('.search-button');
+        const searchInput = document.querySelector('.search-input');
+        searchButton.addEventListener('click', (e) => {
+            const value = searchInput.value;
+            goodsList = this.searchGoods(value);
+            if (goodsList.length > 0) {
+                this.render(goodsList);
+            };
+            this.goodsListBlock.insertAdjacentHTML('beforeend', '<button class="clear-search">очистить поиск</button>');
+        });
     }
 }
 
